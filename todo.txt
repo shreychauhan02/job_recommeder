@@ -1,0 +1,95 @@
+OLD REPO AUDIT — resume-job-recommendation (jainiljakasaniya)
+================================================================
+Goal: figure out what's reusable, what's broken, and what our new
+Streamlit + FastAPI build needs to do differently.
+
+
+1. WHAT'S IN THE REPO
+----------------------
+app.py                          -> Flask app, routes, file upload handling
+indeed_data.csv                 -> ~[N] scraped Indeed job postings
+                                    columns: title, company, salary, description, link
+indeed_web_scraping.py          -> Selenium-based scraper (fragile, not needed)
+indeed_web_scraping_using_bs4.py-> BeautifulSoup scraper, also used inside job.py
+                                    to re-scrape ONE live job link at runtime (bad idea,
+                                    breaks the moment Indeed changes their HTML)
+resume_screening/job.py         -> Core matching logic (2 functions):
+                                    - find_sort_job(): resume -> ranks all CSV jobs
+                                    - find_sort_resume(): job link -> ranks multiple resumes
+resume_screening/resparser.py   -> Wraps extract_skill.py + tika (PDF/DOCX -> text)
+resume_screening/extract_skill.py -> Uses spaCy 2.x PhraseMatcher + LINKEDIN_SKILLS_ORIGINAL.txt
+                                    to pull skill keywords out of resume text
+resume_screening/match.py       -> THE ACTUAL REUSABLE PART:
+                                    - preprocessing() / cleaningText(): text cleanup
+                                    - vectorizing(): CountVectorizer per job
+                                    - coSim(): cosine similarity -> match %
+LINKEDIN_SKILLS_ORIGINAL.txt    -> Big list of skill keywords, reusable as-is
+templates/, static/             -> Flask HTML/CSS, not needed (we use Streamlit)
+requirements.txt                -> Old pinned 2022 versions, root cause of all our
+                                    install failures (numpy 1.22.4, spacy 2.3.1 model,
+                                    resume-parser==0.8.4 -> depends on legacy spacy)
+
+
+2. WHY IT KEPT BREAKING (root cause, now confirmed)
+----------------------------------------------------
+- extract_skill.py hard-requires spaCy 2.x's model format for PhraseMatcher skill
+  extraction. Modern spaCy 3.x models are structurally incompatible (config.cfg
+  format didn't exist in 2.x). This is not fixable without pinning old spaCy.
+- resparser.py also depends on `tika`, which needs a local Java runtime running
+  in the background (Apache Tika server) — another fragile moving part.
+- job.py re-scrapes a live Indeed job link at runtime via BeautifulSoup — will
+  break instantly since site HTML has changed since 2022.
+- Conclusion: skill-extraction + live-scraping layers are unsalvageable without
+  a full legacy environment. We drop both.
+
+
+3. WHAT WE ACTUALLY KEEP
+--------------------------
+✅ indeed_data.csv           -> reuse directly as our job dataset
+✅ match.py logic            -> reuse the IDEA (clean text -> vectorize -> cosine
+                                 similarity), rewritten with TF-IDF instead of
+                                 per-row CountVectorizer (old code built a new
+                                 vectorizer per job row = extremely slow at scale)
+✅ LINKEDIN_SKILLS_ORIGINAL.txt -> optional, can keep for a "skills found" display
+❌ resparser.py / extract_skill.py -> drop entirely (spaCy 2.x / tika dependency)
+❌ indeed_web_scraping*.py   -> drop (fragile, unnecessary — CSV is enough)
+❌ Flask app.py, templates/, static/ -> drop (replaced by Streamlit + FastAPI)
+❌ requirements.txt          -> drop (write fresh, unpinned/modern versions)
+
+
+4. NEW BUILD PLAN (Streamlit + FastAPI, current library versions)
+--------------------------------------------------------------------
+Data:
+  - Load indeed_data.csv as-is (title, company, salary, description, link)
+  - Clean/dedupe descriptions once at startup, cache result
+
+Resume input:
+  - User uploads PDF resume in Streamlit
+  - Extract text using pdfplumber or PyPDF2 (NOT tika — no Java dependency)
+
+Matching engine (backend/main.py, FastAPI):
+  - POST /match endpoint: takes resume text -> returns top-N ranked jobs
+  - TF-IDF vectorizer fit ONCE on all job descriptions + the resume together
+    (fixes the old code's per-row re-vectorization slowness)
+  - Cosine similarity -> match % per job
+  - Sort, return top 10-20
+
+Frontend (app/app.py, Streamlit):
+  - Upload resume PDF
+  - Call FastAPI /match endpoint
+  - Display ranked job table: Title | Company | Match % | Link
+  - Optional: bar chart of top matches (matplotlib, same as your other projects)
+
+Deployment / polish:
+  - requirements.txt with no unnecessary pins
+  - .env for any secrets (none strictly needed here, no API keys required)
+  - README with clear run steps (pip install -> uvicorn -> streamlit run)
+
+
+5. NEXT STEP
+-------------
+Confirm this plan, then we build in this order:
+  1. backend/matching.py  (TF-IDF + cosine similarity core logic)
+  2. backend/main.py      (FastAPI endpoint wrapping it)
+  3. app/app.py           (Streamlit UI calling the API)
+  4. requirements.txt + README
