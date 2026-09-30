@@ -12,15 +12,15 @@ Keyword matching alone misses semantically relevant jobs ("customer churn modeli
 
 ```mermaid
 flowchart TD
-    A[User] --> B[Next.js Frontend - TypeScript + Tailwind]
-    B --> C[Next.js API Routes /api/match /api/explain]
-    C --> D[FastAPI Backend]
-    D --> E[TF-IDF Engine - scikit-learn]
-    D --> F[FastEmbed bge-small-en-v1.5]
-    F --> G[Chroma Cloud - db: jobs_db, collection: jobs]
-    D --> H[Skill Extraction - 179-skill phrase matching]
-    D --> I[/explain - Gemini via OpenAI-compatible API]
-    J[Legacy Streamlit UI - app/app.py] --> D
+    A["User"] --> B["Next.js Frontend (TypeScript + Tailwind)"]
+    B --> C["Next.js API routes: /api/match, /api/explain"]
+    C --> D["FastAPI Backend"]
+    D --> E["TF-IDF Engine (scikit-learn)"]
+    D --> F["FastEmbed bge-small-en-v1.5"]
+    F --> G["Chroma Cloud (db: jobs_db, collection: jobs)"]
+    D --> H["Skill Extraction (179-skill phrase matching)"]
+    D --> I["/explain endpoint (Gemini via OpenAI-compatible API)"]
+    J["Legacy Streamlit UI (app/app.py)"] --> D
 ```
 
 ## Matching process
