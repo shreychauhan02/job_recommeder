@@ -303,7 +303,11 @@ export default function Home() {
           ) : (
             <ul className="space-y-4">
               {results.map((job) => (
-                <JobCard key={`${job.title}-${job.company}`} job={job} resumeSummary={resumeText || file?.name ?? ""} />
+                <JobCard
+                  key={`${job.title}-${job.company}`}
+                  job={job}
+                  resumeSummary={resumeText || (file?.name ?? "")}
+                />
               ))}
             </ul>
           )}
