@@ -4,6 +4,8 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+from backend import skills
+
 
 def cleaningText(text):
     text = str(text)
@@ -38,6 +40,7 @@ class JobMatcher:
             min_df=1,
         )
         self.tfidf_matrix = self.vectorizer.fit_transform(self.df['cleaned'])
+        self.job_skill_sets = self.df['description'].apply(skills.extract_skills)
 
     def match_resume(self, resume_text: str, top_n: int = 20):
         cleaned = cleaningText(resume_text)
@@ -45,14 +48,19 @@ class JobMatcher:
         similarities = cosine_similarity(resume_vec, self.tfidf_matrix).flatten()
         top_indices = similarities.argsort()[::-1][:top_n]
 
+        resume_skill_set = skills.extract_skills(resume_text)
         results = []
         for idx in top_indices:
             row = self.df.iloc[idx]
+            job_skill_set = self.job_skill_sets.iloc[idx]
             results.append({
                 'title': row['title'],
                 'company': row['company'],
+                'location': '',  # dataset has no location column
                 'salary': str(row.get('salary', 'N/A')),
                 'match_percent': round(float(similarities[idx]) * 100, 2),
-                'link': row.get('link', ''),
+                'link': str(row.get('link', '') or ''),
+                'matched_skills': sorted(resume_skill_set & job_skill_set),
+                'missing_skills': sorted(job_skill_set - resume_skill_set),
             })
         return results

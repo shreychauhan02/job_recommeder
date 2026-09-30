@@ -4,5 +4,9 @@ scikit-learn
 pandas
 streamlit
 pdfplumber
+pypdf
 requests
 matplotlib
+python-dotenv
+fastembed
+chromadb
