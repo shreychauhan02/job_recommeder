@@ -163,3 +163,7 @@ cython_debug/
 # Frontend env (BACKEND_URL must stay server-side, never NEXT_PUBLIC_*)
 frontend/.env*
 !frontend/.env.example
+
+# The Python template's `lib/` rule must not swallow the Next.js source
+!frontend/lib/
+!frontend/lib/**
