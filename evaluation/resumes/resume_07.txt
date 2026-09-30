@@ -1,0 +1,2 @@
+Tom Baker - DevOps Engineer
+Automated infrastructure and deployments. Skills: AWS, GCP, Docker, Kubernetes, Terraform, Ansible, Jenkins, GitHub Actions, CI/CD, Linux, Nginx, Prometheus, Grafana, Bash, Python, Helm.

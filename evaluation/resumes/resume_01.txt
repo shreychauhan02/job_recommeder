@@ -1,0 +1,2 @@
+Jane Doe - Data Scientist
+Experience building prediction models and A/B tests. Skills: Python, SQL, Pandas, NumPy, Scikit-learn, TensorFlow, Machine Learning, Statistics, Data Visualization, Tableau. Tools: Jupyter, Git, AWS S3. Education: MSc Statistics.

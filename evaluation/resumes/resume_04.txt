@@ -1,0 +1,2 @@
+Mohammed Ali - Backend Developer
+Built REST APIs and microservices. Skills: Python, FastAPI, Django, PostgreSQL, Redis, Docker, Celery, REST API, OAuth, JWT, Linux, Git, CI/CD, Kubernetes, Message Queues.

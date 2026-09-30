@@ -1,0 +1,2 @@
+Ana Silva - Frontend Web Developer
+Built responsive web apps with React and Next.js. Skills: JavaScript, TypeScript, React, Next.js, HTML, CSS, Tailwind CSS, Redux, Jest, Accessibility, REST API, Vite, Git, GitHub.

@@ -1,0 +1,2 @@
+Ravi Kumar - Senior Data Engineer
+Designed ETL pipelines and data warehousing at scale. Skills: Python, Spark, PySpark, Airflow, dbt, SQL, PostgreSQL, Kafka, AWS, EC2, S3, Lambda, Docker, Data Modeling, Data Warehousing, Snowflake. Built Airflow DAGs for daily batch jobs.

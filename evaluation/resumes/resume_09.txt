@@ -1,0 +1,2 @@
+Carlos Mendes - Full Stack Developer
+Shipped products end to end. Skills: JavaScript, TypeScript, React, Node.js, Express, MongoDB, PostgreSQL, REST API, GraphQL, HTML, CSS, Tailwind, Git, AWS, Docker, Next.js.

@@ -1,0 +1,2 @@
+Priya Nair - Machine Learning Engineer
+Deployed deep learning and NLP models to production. Skills: Python, PyTorch, TensorFlow, Deep Learning, NLP, Computer Vision, MLOps, Docker, FastAPI, Scikit-learn, Pandas, LLM, RAG, AWS.

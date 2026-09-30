@@ -1,0 +1,2 @@
+Aisha Bello - Mobile Developer
+Published cross-platform apps. Skills: Flutter, Dart, React Native, JavaScript, Firebase, REST API, Git, iOS, Android, Swift, Kotlin, WebSocket.
